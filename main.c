@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include "genre-mapping.h"
 
 int main() {
-    system("playerctl -p vlc metadata xesam:genre");
-    return 0;
+    pullGenre();
 }
