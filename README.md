@@ -1,7 +1,14 @@
-notes:
+# DynaEQ: an AI-backed equalizer for optimal music listening
 
- --> eq-engine is for applying the eq
+DynaEQ is an equalizer that will use AI to automatically adjust your computer's audio equalization settings based on the genre of music you're listening to.
 
- --> eq-profiling is just for storing the struct with eq vals
+## Stack:
+ - C (lol)
 
-  --> genre-mapping pulls from vlc and extracts the genre field
+## Current state (v0):
+ - Manual mapping to limited genres obtained from playerctl metadata xesam:genre field
+ - Audio equalization adjustments using easyeffects
+
+## Future additions:
+ - Applying AI-based equalization adjustments using third-party API calls
+ - Extracting audio signatures for songs from third-party APIs to inform equalization adjustments

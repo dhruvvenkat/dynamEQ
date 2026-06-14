@@ -20,7 +20,7 @@ void pullGenre() {
         exit(EXIT_FAILURE);
     }
 
-
+    // TODO: this needs to continuously run (maybe switch to async architecture?)
     ssize_t nread = getline(&genre, &capacity, fpipe);
     genre[strcspn(genre, "\n")] = '\0'; // cutting newline character out of genre
 
