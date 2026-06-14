@@ -42,7 +42,7 @@ static const EqProfile profiles[EQ_PRESET_COUNT] = {
     }
 };
 
-const EqProfile *eq_profile_get(EqPresetID id) {
+EqProfile *eq_profile_get(EqPresetID id) {
     if (id < 0 || id >= EQ_PRESET_COUNT) {
         return &profiles[EQ_PRESET_NEUTRAL]; // by default, preset is neutral
     }
@@ -58,4 +58,6 @@ void printProfile(EqProfile *profile) {
     for (int i = 0; i < EQ_BAND_COUNT; i++) {
         printf("%f", profile->gains_db[i]);
     }
+
+    printf("\n");
 }

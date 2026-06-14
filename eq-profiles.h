@@ -19,6 +19,6 @@ typedef struct {
     float gains_db[EQ_BAND_COUNT];
 } EqProfile;
 
-const EqProfile *eq_profile_get(EqPresetID id);
-const char *eq_profile_name(EqPresetID id);
+EqProfile *eq_profile_get(EqPresetID id);
+void printProfile(EqProfile *profile);
 #endif

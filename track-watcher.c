@@ -1,32 +1,47 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 #include "track-watcher.h"
+#include "genre-mapping.h"
 
 void pullGenre() {
     FILE *fpipe;
-    char *command = "playerctl --player=vlc --follow metadata xesam:genre";
+    // TODO: playerctl follow doesn't work if the player is not running - need to figure out a solution
+    //char *command = "playerctl --player=vlc --follow metadata xesam:genre";
+    char *command = "playerctl --player=vlc metadata xesam:genre";
     char* genre = NULL;
-    size_t capacity = 0;  
-    
+    size_t capacity = 0;
+
     fpipe = (FILE*)popen(command, "r");
-    
+
 
     if (fpipe == 0) {
         perror("popen() failed");
         exit(EXIT_FAILURE);
     }
-    
 
-    while (getline(&genre, &capacity, fpipe) != -1) {
-        if ("genre" == "\0") {
-            printf("no song detected");
-            return;
-        }
-        printf("%s", genre);
+
+    // while (getline(&genre, &capacity, fpipe) != -1) {
+    //     if (strcmp(genre, "\0") == 0) {
+    //         printf("no song detected");
+    //         return;
+    //     }
+    //     printf("%s", genre);
+    //     genreToPreset(genre);
+    // }
+
+
+    ssize_t nread = getline(&genre, &capacity, fpipe);
+    genre[strcspn(genre, "\n")] = '\0'; // cutting newline character out of genre
+
+    if (nread == -1) {
+        perror("getline");
+        free(genre);
+        pclose(fpipe);
+        //return 1;
     }
-    
+    //printf("genre: %s", genre);
+    genreToPreset(genre);
 
-    perror("getline");
-    free(genre);
     pclose(fpipe);
 }
