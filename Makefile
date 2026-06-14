@@ -1,2 +1,2 @@
 make:
-	cc main.c genre-mapping.c -o equalizer.out
+	cc main.c genre-mapping.c track-watcher.c -o equalizer.out

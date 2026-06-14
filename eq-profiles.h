@@ -12,9 +12,9 @@ typedef enum {
     EQ_PRESET_WARMTH,
     EQ_PRESET_COUNT
 } EqPresetID;
- 
+
 typedef struct {
-    EqPresetID preset;
+    EqPresetID id;
     const char *name;
     float gains_db[EQ_BAND_COUNT];
 } EqProfile;
