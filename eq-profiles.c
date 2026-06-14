@@ -1,5 +1,4 @@
 #include <stdio.h>
-#include <stdlib.h>
 #include "eq-profiles.h"
 
 // designated array initializer containing all of the EQ band levels we need

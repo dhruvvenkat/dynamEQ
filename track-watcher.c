@@ -21,16 +21,6 @@ void pullGenre() {
     }
 
 
-    // while (getline(&genre, &capacity, fpipe) != -1) {
-    //     if (strcmp(genre, "\0") == 0) {
-    //         printf("no song detected");
-    //         return;
-    //     }
-    //     printf("%s", genre);
-    //     genreToPreset(genre);
-    // }
-
-
     ssize_t nread = getline(&genre, &capacity, fpipe);
     genre[strcspn(genre, "\n")] = '\0'; // cutting newline character out of genre
 

@@ -1,6 +1,8 @@
+#include "eq-profiles.h"
+
 #ifndef GENRE_MAPPING_H
 #define GENRE_MAPPING_H
 
-void genreToPreset(char* genre);
+EqProfile *genreToPreset(char* genre);
 
 #endif

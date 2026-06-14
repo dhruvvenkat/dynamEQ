@@ -1,5 +1,4 @@
 #include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
 #include "genre-mapping.h"
 #include "eq-profiles.h"
@@ -30,16 +29,17 @@ static const GenreMapping mappings[] = {
     { "Classical",  EQ_PRESET_NEUTRAL }
 };
 
-void genreToPreset(char* genre) {
+EqProfile *genreToPreset(char* genre) {
     size_t mappingCount = sizeof(mappings)/sizeof(mappings[0]);
     printf("incoming genre: %s\n", genre);
     for (size_t i = 0; i < mappingCount; i++) {
         if (strcmp(genre, mappings[i].genre) == 0) {
             EqProfile *profile = eq_profile_get(mappings[i].preset);
             printProfile(profile);
+            return profile;
         }
-
-        // EqProfile *profile = eq_profile_get(mappings[i].preset);
-        // printProfile(profile);
     }
+
+    printf("no correlating genre found, skipping...");
+    return NULL;
 }
