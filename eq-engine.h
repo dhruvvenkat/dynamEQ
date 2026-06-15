@@ -1,9 +1,10 @@
+#include <stdbool.h>
 #include "eq-profiles.h"
 
 #ifndef EQ_ENGINE_H
 #define EQ_ENGINE_H
 
-void applyEQ(EqProfile *profile);
+bool applyEQ(EqProfile *profile);
 
 
 #endif

@@ -1,8 +1,11 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <stdbool.h>
 #include "track-watcher.h"
 #include "genre-mapping.h"
+#include "eq-profiles.h"
+#include "eq-engine.h"
 
 void pullGenre() {
     FILE *fpipe;
@@ -31,7 +34,8 @@ void pullGenre() {
         //return 1;
     }
     //printf("genre: %s", genre);
-    genreToPreset(genre);
+    EqProfile *profileToApply = genreToPreset(genre);
+    applyEQ(profileToApply);
 
     pclose(fpipe);
 }

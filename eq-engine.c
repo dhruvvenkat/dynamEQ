@@ -1,7 +1,9 @@
 #include <stdio.h>
+#include <stdbool.h>
 #include "eq-engine.h"
 #include "eq-profiles.h"
 
-void applyEQ(EqProfile *profile) {
-
+bool applyEQ(EqProfile *profile) {
+    printf("applying profile: %s\n", profile->name);
+    return true;
 }
