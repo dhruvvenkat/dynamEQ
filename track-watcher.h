@@ -4,6 +4,6 @@
 #define TRACK_WATCHER_H
 
 bool findPlayer();
-const char *pullGenre(char *currentPreset);
+const char *pullGenre(const char *currentPreset);
 
 #endif
