@@ -55,7 +55,7 @@ const EqProfile *eq_profile_get(EqPresetID id) {
     return &profiles[id];
 }
 
-const void printProfile(const EqProfile *profile) {
+void printProfile(const EqProfile *profile) {
     printf("profile: %s\n", profile->name);
     printf("preset to apply: %s\n", profile->presetName);
 

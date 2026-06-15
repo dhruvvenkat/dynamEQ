@@ -21,5 +21,5 @@ typedef struct {
 } EqProfile;
 
 const EqProfile *eq_profile_get(EqPresetID id);
-const void printProfile(const EqProfile *profile);
+void printProfile(const EqProfile *profile);
 #endif
