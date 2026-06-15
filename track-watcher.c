@@ -7,6 +7,7 @@
 #include "genre-mapping.h"
 #include "eq-profiles.h"
 #include "eq-engine.h"
+#include "tag_c.h"
 
 bool findPlayer() {
     FILE *fpipe;
@@ -35,51 +36,72 @@ bool findPlayer() {
 }
 
 const char *pullGenre(const char *currentPreset) {
-    FILE *fpipe;
+    FILE *genrePipe;
+    FILE *urlPipe;
     // TODO: playerctl follow doesn't work if the player is not running - need to figure out a solution
     //char *command = "playerctl --player=vlc --follow metadata xesam:genre";
     char *command = "playerctl --player=vlc metadata xesam:genre";
+    char *commandURL = "playerctl --player=vlc metadata xesam:url";
     char* genre = NULL;
+    char *url = NULL;
     size_t capacity = 0;
 
-    fpipe = (FILE*)popen(command, "r");
+    genrePipe = (FILE*)popen(command, "r");
 
-    if (fpipe == 0) {
+    if (genrePipe == 0) {
         perror("popen() failed");
         return currentPreset;
     }
 
     // TODO: this needs to continuously run (maybe switch to async architecture?)
-    ssize_t nread = getline(&genre, &capacity, fpipe);
+    ssize_t nread = getline(&genre, &capacity, genrePipe);
 
     if (nread == -1) {
         perror("getline");
         free(genre);
-        pclose(fpipe);
-        //return 1;
+        pclose(genrePipe);
+        return currentPreset;
+    }
+    genre[strcspn(genre, "\n")] = '\0'; // cutting newline character out of genre
+    pclose(genrePipe);
+
+    //grab the file path to pass to taglib
+    capacity = 0;
+    urlPipe = (FILE*)popen(commandURL, "r");
+    nread = getline(&url, &capacity, urlPipe);
+
+    if (urlPipe == 0) {
+        perror("popen() failed");
+        return currentPreset;
     }
 
-    genre[strcspn(genre, "\n")] = '\0'; // cutting newline character out of genre
-
+    if (nread == -1) {
+        perror("getline");
+        free(genre);
+        pclose(urlPipe);
+        return currentPreset;
+    }
+    //url[strcspn(url, "\n")] = '\0';
+    printf("url: %s", url);
 
     //printf("genre: %s", genre);
     const EqProfile *profileToApply = genreToPreset(genre);
 
     if (strcmp(profileToApply->name, currentPreset) == 0) {
         //printf("preset doesn't need to change...skipping\n");
-            pclose(fpipe);
+            pclose(urlPipe);
         return currentPreset;
     }
 
     printf("genre: %s\n", genre);
     bool eqApplied = applyEQ(profileToApply);
     if (eqApplied == true) {
-        pclose(fpipe);
         return profileToApply->name;
     } else {
         printf("eq application failed :(\n");
     }
 
-    pclose(fpipe);
+    free(genre);
+    free(url);
     return currentPreset;
 }

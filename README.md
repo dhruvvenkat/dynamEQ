@@ -11,4 +11,6 @@ DynaEQ is an equalizer that will use AI to automatically adjust your computer's 
 
 ## Future additions:
  - Applying AI-based equalization adjustments using third-party API calls
+ - Train my own model to make good decisions for equalization adjustments based on audio signatures(?)
  - Extracting audio signatures for songs from third-party APIs to inform equalization adjustments
+ - Make streamed content available for equalization adjustments

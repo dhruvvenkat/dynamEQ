@@ -1,0 +1,2 @@
+ - need to make sure that install.sh script installs + builds taglib on the target system
+ - dependencies include vlc and playerctl (for now)

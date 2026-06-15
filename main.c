@@ -7,7 +7,7 @@
 #include "eq-profiles.h"
 
 int main() {
-    char *currentPreset = NULL;
+    char *currentPreset = "neutral";
     while (1) {
         while (!findPlayer()) {
             sleep(2);
