@@ -47,7 +47,7 @@ static const EqProfile profiles[EQ_PRESET_COUNT] = {
     }
 };
 
-EqProfile *eq_profile_get(EqPresetID id) {
+const EqProfile *eq_profile_get(EqPresetID id) {
     if (id < 0 || id >= EQ_PRESET_COUNT) {
         return &profiles[EQ_PRESET_NEUTRAL]; // by default, preset is neutral
     }
@@ -55,7 +55,7 @@ EqProfile *eq_profile_get(EqPresetID id) {
     return &profiles[id];
 }
 
-void printProfile(EqProfile *profile) {
+const void printProfile(const EqProfile *profile) {
     printf("profile: %s\n", profile->name);
     printf("preset to apply: %s\n", profile->presetName);
 

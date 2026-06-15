@@ -20,6 +20,6 @@ typedef struct {
     const char *presetName; // stores the name of the preset as held in easyeffects
 } EqProfile;
 
-EqProfile *eq_profile_get(EqPresetID id);
-void printProfile(EqProfile *profile);
+const EqProfile *eq_profile_get(EqPresetID id);
+const void printProfile(const EqProfile *profile);
 #endif

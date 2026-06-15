@@ -29,12 +29,12 @@ static const GenreMapping mappings[] = {
     { "Classical",  EQ_PRESET_NEUTRAL }
 };
 
-EqProfile *genreToPreset(char* genre) {
+const EqProfile *genreToPreset(char* genre) {
     size_t mappingCount = sizeof(mappings)/sizeof(mappings[0]);
     printf("incoming genre: %s\n", genre);
     for (size_t i = 0; i < mappingCount; i++) {
         if (strcmp(genre, mappings[i].genre) == 0) {
-            EqProfile *profile = eq_profile_get(mappings[i].preset);
+            const EqProfile *profile = eq_profile_get(mappings[i].preset);
             printProfile(profile);
             return profile;
         }

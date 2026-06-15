@@ -34,7 +34,7 @@ void pullGenre() {
         //return 1;
     }
     //printf("genre: %s", genre);
-    EqProfile *profileToApply = genreToPreset(genre);
+    const EqProfile *profileToApply = genreToPreset(genre);
     bool eqApplied = applyEQ(profileToApply);
     if (eqApplied == true) {
         printf("eq applied!!");

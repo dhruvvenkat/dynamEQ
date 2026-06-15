@@ -3,6 +3,6 @@
 #ifndef GENRE_MAPPING_H
 #define GENRE_MAPPING_H
 
-EqProfile *genreToPreset(char* genre);
+const EqProfile *genreToPreset(char* genre);
 
 #endif

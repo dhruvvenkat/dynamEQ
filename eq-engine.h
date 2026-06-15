@@ -4,6 +4,6 @@
 #ifndef EQ_ENGINE_H
 #define EQ_ENGINE_H
 
-bool applyEQ(EqProfile *profile);
+bool applyEQ(const EqProfile *profile);
 
 #endif
