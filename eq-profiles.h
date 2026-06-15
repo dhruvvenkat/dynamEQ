@@ -17,6 +17,7 @@ typedef struct {
     EqPresetID id;
     const char *name;
     float gains_db[EQ_BAND_COUNT];
+    const char *presetName; // stores the name of the preset as held in easyeffects
 } EqProfile;
 
 EqProfile *eq_profile_get(EqPresetID id);

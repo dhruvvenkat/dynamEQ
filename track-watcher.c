@@ -35,7 +35,12 @@ void pullGenre() {
     }
     //printf("genre: %s", genre);
     EqProfile *profileToApply = genreToPreset(genre);
-    applyEQ(profileToApply);
+    bool eqApplied = applyEQ(profileToApply);
+    if (eqApplied == true) {
+        printf("eq applied!!");
+    } else {
+        printf("eq application failed :(\n");
+    }
 
     pclose(fpipe);
 }

@@ -7,37 +7,43 @@ static const EqProfile profiles[EQ_PRESET_COUNT] = {
     [EQ_PRESET_NEUTRAL] = {
         .id = EQ_PRESET_NEUTRAL,
         .name = "Neutral",
-        .gains_db = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+        .gains_db = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+        .presetName = "neutral"
     },
 
     [EQ_PRESET_BASS_PLUS] = {
         .id = EQ_PRESET_BASS_PLUS,
         .name = "BassPlus",
-        .gains_db = {1.5f, 2.0f, 1.0f, 0, 0, 0, 0, 0, 0.5f, 0}
+        .gains_db = {1.5f, 2.0f, 1.0f, 0, 0, 0, 0, 0, 0.5f, 0},
+        .presetName = "BassPlus"
     },
 
     [EQ_PRESET_CLEAN_BASS] = {
         .id = EQ_PRESET_CLEAN_BASS,
         .name = "CleanBass",
-        .gains_db = {0.5f, 1.0f, 0.5f, -1.5f, -1.0f, 0, 0, -0.5f, 0, 0}
+        .gains_db = {0.5f, 1.0f, 0.5f, -1.5f, -1.0f, 0, 0, -0.5f, 0, 0},
+        .presetName = "CleanBass"
     },
 
     [EQ_PRESET_ANTI_HARSH] = {
         .id = EQ_PRESET_ANTI_HARSH,
         .name = "AntiHarsh",
-        .gains_db = {0, 0, 0, 0, 0, 0, -0.5f, -1.5f, -1.0f, 0}
+        .gains_db = {0, 0, 0, 0, 0, 0, -0.5f, -1.5f, -1.0f, 0},
+        .presetName = "AntiHarsh"
     },
 
     [EQ_PRESET_VOCAL_CLARITY] = {
         .id = EQ_PRESET_VOCAL_CLARITY,
         .name = "VocalClarity",
-        .gains_db = {0, 0, 0, -0.5f, 0, 0.5f, 1.0f, 0.5f, 0, 0}
+        .gains_db = {0, 0, 0, -0.5f, 0, 0.5f, 1.0f, 0.5f, 0, 0},
+        .presetName = "VocalClarity"
     },
 
     [EQ_PRESET_WARMTH] = {
         .id = EQ_PRESET_WARMTH,
         .name = "Warmth",
-        .gains_db = {0, 0.5f, 1.0f, 1.0f, 0.5f, 0, -0.5f, -0.5f, 0, 0}
+        .gains_db = {0, 0.5f, 1.0f, 1.0f, 0.5f, 0, -0.5f, -0.5f, 0, 0},
+        .presetName = "Warmth"
     }
 };
 
@@ -51,6 +57,7 @@ EqProfile *eq_profile_get(EqPresetID id) {
 
 void printProfile(EqProfile *profile) {
     printf("profile: %s\n", profile->name);
+    printf("preset to apply: %s\n", profile->presetName);
 
     printf("EQ bands: ");
 

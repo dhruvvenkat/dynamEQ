@@ -6,5 +6,4 @@
 
 bool applyEQ(EqProfile *profile);
 
-
 #endif
