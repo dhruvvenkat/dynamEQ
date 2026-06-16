@@ -86,7 +86,7 @@ void buildTrackContext(CurrTrackInfo *info) {
     TrackContext context;
     extractMetadata(&context, url, "vlc");
 
-    const EqProfile *profileToApply = genreToPreset(genre);
+    const EqProfile *profileToApply = genreToPreset(context.genre);
 
     if (info != NULL && info->preset != NULL &&
             strcmp(profileToApply->name, info->preset) == 0 &&
