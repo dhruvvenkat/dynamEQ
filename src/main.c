@@ -13,7 +13,7 @@ int main() {
             sleep(2);
         }
 
-        pullGenre(&avoidDuplicates);
+        buildTrackContext(&avoidDuplicates);
         sleep(1);
     }
 }

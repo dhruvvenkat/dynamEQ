@@ -7,6 +7,7 @@ DynaEQ is an equalizer that will use AI to automatically adjust your computer's 
 
 ## Current state (v0):
  - Manual mapping to limited genres obtained from playerctl metadata xesam:genre field
+ - Pulling track metadata from playerctl using taglib - this will later be passed to the AI model
  - Audio equalization adjustments using easyeffects
 
 ## Future additions:

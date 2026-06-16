@@ -35,7 +35,7 @@ bool findPlayer() {
     return false;
 }
 
-void pullGenre(CurrTrackInfo *info) {
+void buildTrackContext(CurrTrackInfo *info) {
     FILE *genrePipe;
     FILE *urlPipe;
     // TODO: playerctl follow doesn't work if the player is not running - need to figure out a solution

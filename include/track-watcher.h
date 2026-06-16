@@ -9,6 +9,6 @@ typedef struct {
 } CurrTrackInfo;
 
 bool findPlayer();
-void pullGenre(CurrTrackInfo *info);
+void buildTrackContext(CurrTrackInfo *info);
 
 #endif
