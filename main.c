@@ -7,13 +7,13 @@
 #include "eq-profiles.h"
 
 int main() {
-    const char *currentPreset = "neutral";
+    CurrTrackInfo avoidDuplicates = {"neutral", ""};
     while (1) {
         while (!findPlayer()) {
             sleep(2);
         }
 
-        currentPreset = pullGenre(currentPreset);
+        pullGenre(&avoidDuplicates);
         sleep(1);
     }
 }

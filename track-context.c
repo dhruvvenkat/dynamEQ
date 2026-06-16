@@ -73,7 +73,7 @@ static void localPathFromTrackURL(char *field, size_t fieldSize, const char *tra
     decodePercentEscapes(field, fieldSize, path);
 }
 
-static void printContext(const TrackContext *context) {
+void printContext(const TrackContext *context) {
     if (context == NULL) {
         printf("TrackContext: NULL\n");
         return;
@@ -153,13 +153,7 @@ void extractMetadata(TrackContext *context, const char *trackURL, const char *so
     count += isFieldPopulated(context->filePath);
     count += isFieldPopulated(context->sourcePlayer);
     context->metadataQuality = count;
-    printf("# of filled fields: %d", context->metadataQuality);
-
-    if (context->metadataQuality > 0) {
-        printContext(context);
-    } else {
-        printf("no context found");
-    }
+    //printf("# of filled fields: %d", context->metadataQuality);
 
     return;
 }

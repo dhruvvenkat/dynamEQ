@@ -18,6 +18,6 @@ typedef struct {
 void extractMetadata(TrackContext *context, const char *trackURL, const char *sourcePlayer);
 // static void pullString(char *field, size_t fieldSize, const char *src);
 // static unsigned int isFieldPopulated(const char *field);
-// static void printContext(const TrackContext *context);
+void printContext(const TrackContext *context);
 
 #endif

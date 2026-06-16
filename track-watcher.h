@@ -3,7 +3,12 @@
 #ifndef TRACK_WATCHER_H
 #define TRACK_WATCHER_H
 
+typedef struct {
+    const char *preset;
+    char URL[512];
+} CurrTrackInfo;
+
 bool findPlayer();
-const char *pullGenre(const char *currentPreset);
+void pullGenre(CurrTrackInfo *info);
 
 #endif

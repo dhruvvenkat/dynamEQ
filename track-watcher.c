@@ -35,7 +35,7 @@ bool findPlayer() {
     return false;
 }
 
-const char *pullGenre(const char *currentPreset) {
+void pullGenre(CurrTrackInfo *info) {
     FILE *genrePipe;
     FILE *urlPipe;
     // TODO: playerctl follow doesn't work if the player is not running - need to figure out a solution
@@ -50,7 +50,7 @@ const char *pullGenre(const char *currentPreset) {
 
     if (genrePipe == 0) {
         perror("popen() failed");
-        return currentPreset;
+        return;
     }
 
     // TODO: this needs to continuously run (maybe switch to async architecture?)
@@ -60,7 +60,7 @@ const char *pullGenre(const char *currentPreset) {
         perror("getline");
         free(genre);
         pclose(genrePipe);
-        return currentPreset;
+        return;
     }
     genre[strcspn(genre, "\n")] = '\0'; // cutting newline character out of genre
     pclose(genrePipe);
@@ -71,7 +71,7 @@ const char *pullGenre(const char *currentPreset) {
     if (urlPipe == 0) {
         perror("popen() failed");
         free(genre);
-        return currentPreset;
+        return;
     }
 
     nread = getline(&url, &capacity, urlPipe);
@@ -79,31 +79,37 @@ const char *pullGenre(const char *currentPreset) {
         perror("getline");
         free(genre);
         pclose(urlPipe);
-        return currentPreset;
+        return;
     }
     url[strcspn(url, "\n")] = '\0';
 
     TrackContext context;
     extractMetadata(&context, url, "vlc");
 
-    //printf("genre: %s", genre);
     const EqProfile *profileToApply = genreToPreset(genre);
 
-    if (strcmp(profileToApply->name, currentPreset) == 0) {
+    if (info != NULL && info->preset != NULL &&
+            strcmp(profileToApply->name, info->preset) == 0 &&
+            strcmp(context.filePath, info->URL) == 0) {
         //printf("preset doesn't need to change...skipping\n");
-            pclose(urlPipe);
-        return currentPreset;
+        pclose(urlPipe);
+        return;
     }
 
     printf("genre: %s\n", genre);
     bool eqApplied = applyEQ(profileToApply);
     if (eqApplied == true) {
-        return profileToApply->name;
+        if (info != NULL) {
+            info->preset = profileToApply->name;
+            snprintf(info->URL, sizeof(info->URL), "%s", context.filePath);
+        }
+        printContext(&context);
+        return;
     } else {
         printf("eq application failed :(\n");
     }
 
     free(genre);
     free(url);
-    return currentPreset;
+    return;
 }
