@@ -7,7 +7,7 @@
 #include "genre-mapping.h"
 #include "eq-profiles.h"
 #include "eq-engine.h"
-#include "tag_c.h"
+#include "track-context.h"
 
 bool findPlayer() {
     FILE *fpipe;
@@ -68,21 +68,23 @@ const char *pullGenre(const char *currentPreset) {
     //grab the file path to pass to taglib
     capacity = 0;
     urlPipe = (FILE*)popen(commandURL, "r");
-    nread = getline(&url, &capacity, urlPipe);
-
     if (urlPipe == 0) {
         perror("popen() failed");
+        free(genre);
         return currentPreset;
     }
 
+    nread = getline(&url, &capacity, urlPipe);
     if (nread == -1) {
         perror("getline");
         free(genre);
         pclose(urlPipe);
         return currentPreset;
     }
-    //url[strcspn(url, "\n")] = '\0';
-    printf("url: %s", url);
+    url[strcspn(url, "\n")] = '\0';
+
+    TrackContext context;
+    extractMetadata(&context, url, "vlc");
 
     //printf("genre: %s", genre);
     const EqProfile *profileToApply = genreToPreset(genre);
