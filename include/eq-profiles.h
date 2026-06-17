@@ -4,6 +4,23 @@
 #define EQ_BAND_COUNT 10
 
 typedef enum {
+    EQ_REC_SOURCE_GENRE_FALLBACK, // uses genre to recommend
+    EQ_REC_SOURCE_NEUTRAL_FALLBACK, // recommends neutral in case of failure
+    // model sources are placeholders for now
+    EQ_REC_SOURCE_MODEL_METADATA, // passes metadata text into inference model
+    EQ_REC_SOURCE_MODEL_AUDIO, // passes audio signature into inference model
+    EQ_REC_SOURCE_MANUAL_OVERRIDE // user override
+} EqRecommendationSource;
+
+
+typedef struct {
+    char profileName[64];
+    float gainsDb[EQ_BAND_COUNT];
+    float confidence;
+    EqRecommendationSource source;
+} EqRecommendation;
+
+typedef enum {
     EQ_PRESET_NEUTRAL,
     EQ_PRESET_BASS_PLUS,
     EQ_PRESET_CLEAN_BASS,

@@ -2,6 +2,7 @@
 #include <string.h>
 #include "genre-mapping.h"
 #include "eq-profiles.h"
+#include "track-context.h"
 
 typedef struct {
     const char *genre;
@@ -42,4 +43,19 @@ const EqProfile *genreToPreset(char* genre) {
 
     printf("no correlating genre found, skipping...");
     return NULL;
+}
+
+bool recommendFromTrackContext(const TrackContext *context, EqRecommendation *recommendation) {
+    char *genre = context->genre;
+    EqProfile *mappedProfile = genreToPreset(genre);
+
+    // recommendation->profileName =
+    pullString(recommendation->profileName, 64, mappedProfile->presetName);
+    recommendation->confidence = 1.00; // confidence is 100% for now - will change once inference is added
+    for (int i = 10; i > 0; i--) {
+        recommendation->gainsDb[i] = mappedProfile->gains_db[i];
+    }
+    recommendation->source = EQ_REC_SOURCE_GENRE_FALLBACK;
+
+    return true;
 }

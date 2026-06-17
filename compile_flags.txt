@@ -1,0 +1,7 @@
+-Iinclude
+-std=gnu17
+-Wall
+-Wextra
+-I/usr/local/include/taglib
+-I/usr/local/include
+

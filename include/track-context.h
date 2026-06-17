@@ -1,4 +1,3 @@
-#include <stdlib.h>
 #include <stdbool.h>
 
 #ifndef TRACK_CONTEXT_H
@@ -16,7 +15,7 @@ typedef struct {
 } TrackContext;
 
 void extractMetadata(TrackContext *context, const char *trackURL, const char *sourcePlayer);
-// static void pullString(char *field, size_t fieldSize, const char *src);
+void pullString(char *field, size_t fieldSize, const char *src);
 // static unsigned int isFieldPopulated(const char *field);
 void printContext(const TrackContext *context);
 

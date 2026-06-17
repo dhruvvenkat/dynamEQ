@@ -5,7 +5,7 @@
 #include "tag_c.h"
 #include "track-context.h"
 
-static void pullString(char *field, size_t fieldSize, const char *src) {
+void pullString(char *field, size_t fieldSize, const char *src) {
     if (fieldSize == 0) {
         return;
     }
