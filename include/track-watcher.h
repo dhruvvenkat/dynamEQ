@@ -6,12 +6,11 @@
 #define TRACK_WATCHER_H
 
 typedef struct {
-    const char *preset;
+    char preset[64];
     char URL[512];
 } CurrTrackInfo;
 
 bool findPlayer();
-static void printTrackInfo(TrackContext *context, EqRecommendation *recommendation);
 void buildTrackContext(CurrTrackInfo *info);
 
 #endif
