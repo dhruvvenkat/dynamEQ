@@ -35,6 +35,16 @@ bool findPlayer() {
     return false;
 }
 
+static void printTrackInfo(TrackContext *context, EqRecommendation *recommendation) {
+    printf("track name: %s\n", context->title);
+    printf("artist: %s\n", context->artist);
+    printf("genre: %s\n", context->genre);
+
+    printf("profile selected: %s\n", recommendation->profileName);
+    printf("confidence: %f\n", recommendation->confidence);
+    printf("---------------\n");
+}
+
 void buildTrackContext(CurrTrackInfo *info) {
     FILE *genrePipe;
     FILE *urlPipe;
@@ -97,24 +107,23 @@ void buildTrackContext(CurrTrackInfo *info) {
         neutralFallbackRecommendation(&recommendation);
     }
 
-    const EqProfile *profileToApply = genreToPreset(context.genre);
+    //const EqProfile *profileToApply = genreToPreset(context.genre);
 
     if (info != NULL && info->preset != NULL &&
-            strcmp(profileToApply->name, info->preset) == 0 &&
+            strcmp(recommendation.profileName, info->preset) == 0 &&
             strcmp(context.filePath, info->URL) == 0) {
-        //printf("preset doesn't need to change...skipping\n");
         pclose(urlPipe);
         return;
     }
 
-    printf("genre: %s\n", genre);
-    bool eqApplied = applyEQ(profileToApply);
+    //printf("genre: %s\n", genre);
+    bool eqApplied = applyEQ(&recommendation);
     if (eqApplied == true) {
         if (info != NULL) {
-            info->preset = profileToApply->name;
+            info->preset = recommendation.profileName;
             snprintf(info->URL, sizeof(info->URL), "%s", context.filePath);
         }
-        printContext(&context);
+        printTrackInfo(&context, &recommendation);
         return;
     } else {
         printf("eq application failed :(\n");

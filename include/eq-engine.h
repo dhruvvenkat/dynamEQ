@@ -4,6 +4,6 @@
 #ifndef EQ_ENGINE_H
 #define EQ_ENGINE_H
 
-bool applyEQ(const EqProfile *profile);
+bool applyEQ(const EqRecommendation *recommendation);
 
 #endif

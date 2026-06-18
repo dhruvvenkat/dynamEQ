@@ -4,10 +4,10 @@
 #include "eq-engine.h"
 #include "eq-profiles.h"
 
-bool applyEQ(const EqProfile *profile) {
-    printf("applying profile: %s\n", profile->name);
+bool applyEQ(const EqRecommendation *recommendation) {
+    //printf("applying profile: %s\n", recommendation->profileName);
     char *appEQCmd = NULL;
-    asprintf(&appEQCmd, "easyeffects -l %s", profile->presetName);
+    asprintf(&appEQCmd, "easyeffects -l %s", recommendation->profileName);
     int executed = system(appEQCmd);
 
     free(appEQCmd);

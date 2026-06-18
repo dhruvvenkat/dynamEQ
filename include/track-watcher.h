@@ -1,4 +1,6 @@
 #include <stdbool.h>
+#include "eq-profiles.h"
+#include "track-context.h"
 
 #ifndef TRACK_WATCHER_H
 #define TRACK_WATCHER_H
@@ -9,6 +11,7 @@ typedef struct {
 } CurrTrackInfo;
 
 bool findPlayer();
+static void printTrackInfo(TrackContext *context, EqRecommendation *recommendation);
 void buildTrackContext(CurrTrackInfo *info);
 
 #endif
