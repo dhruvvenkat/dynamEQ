@@ -7,5 +7,7 @@
 
 const EqProfile *genreToPreset(char* genre);
 bool recommendFromTrackContext(const TrackContext *context, EqRecommendation *recommendation);
+bool validateRecommendation(EqRecommendation *recommendation);
+void neutralFallbackRecommendation(EqRecommendation *recommendation);
 
 #endif

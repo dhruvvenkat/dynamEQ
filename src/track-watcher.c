@@ -86,6 +86,17 @@ void buildTrackContext(CurrTrackInfo *info) {
     TrackContext context;
     extractMetadata(&context, url, "vlc");
 
+    EqRecommendation recommendation;
+    bool recommendationMade = recommendFromTrackContext(&context, &recommendation);
+
+    if (recommendationMade) {
+        if (!validateRecommendation(&recommendation)) {
+            neutralFallbackRecommendation(&recommendation);
+        }
+    } else {
+        neutralFallbackRecommendation(&recommendation);
+    }
+
     const EqProfile *profileToApply = genreToPreset(context.genre);
 
     if (info != NULL && info->preset != NULL &&

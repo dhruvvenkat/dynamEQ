@@ -46,16 +46,55 @@ const EqProfile *genreToPreset(char* genre) {
 }
 
 bool recommendFromTrackContext(const TrackContext *context, EqRecommendation *recommendation) {
-    char *genre = context->genre;
-    EqProfile *mappedProfile = genreToPreset(genre);
+    const EqProfile *mappedProfile = genreToPreset(context->genre);
 
     // recommendation->profileName =
     pullString(recommendation->profileName, 64, mappedProfile->presetName);
     recommendation->confidence = 1.00; // confidence is 100% for now - will change once inference is added
-    for (int i = 10; i > 0; i--) {
+    for (int i = 9; i >= 0; i--) {
         recommendation->gainsDb[i] = mappedProfile->gains_db[i];
     }
     recommendation->source = EQ_REC_SOURCE_GENRE_FALLBACK;
 
     return true;
+}
+
+bool validateRecommendation(EqRecommendation *recommendation) {
+    if (strcmp(recommendation->profileName, "") == 0) {
+        printf("no profile name found - recommendation invalid");
+        return false;
+    }
+
+    if ((recommendation->confidence < 0.0f) || (recommendation->confidence > 1.0f)) {
+        printf("condfidence outside of the range 0-1, incalid");
+        return false;
+    }
+
+    for (int i = 9; i >= 0; i--) {
+        float gain = recommendation->gainsDb[i];
+        if ((gain < EQ_MAX_CUT_DB) || (gain > EQ_MAX_BOOST_DB)) {
+            printf("gain outside of safe levels - invalid");
+            return false;
+        }
+    }
+
+    if (recommendation->source > 5) {
+        printf("recommendation enum outside of proper range - invalid");
+        return false;
+    }
+
+    return true;
+}
+
+void neutralFallbackRecommendation(EqRecommendation *recommendation) {
+    char *neutralString = "neutral";
+    pullString(recommendation->profileName, 64, neutralString);
+
+    recommendation->confidence = 1.0f;
+
+    for (int i = 9; i >= 0; i--) {
+        recommendation->gainsDb[i] = 0;
+    }
+
+    recommendation->source = EQ_REC_SOURCE_NEUTRAL_FALLBACK;
 }

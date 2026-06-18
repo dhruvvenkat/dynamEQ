@@ -2,11 +2,13 @@
 #define EQ_PROFILES_H
 
 #define EQ_BAND_COUNT 10
+#define EQ_MAX_BOOST_DB 3.0f
+#define EQ_MAX_CUT_DB -6.0f
 
 typedef enum {
     EQ_REC_SOURCE_GENRE_FALLBACK, // uses genre to recommend
     EQ_REC_SOURCE_NEUTRAL_FALLBACK, // recommends neutral in case of failure
-    // model sources are placeholders for now
+    // inference model sources are placeholders for now
     EQ_REC_SOURCE_MODEL_METADATA, // passes metadata text into inference model
     EQ_REC_SOURCE_MODEL_AUDIO, // passes audio signature into inference model
     EQ_REC_SOURCE_MANUAL_OVERRIDE // user override
