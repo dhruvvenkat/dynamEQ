@@ -1,4 +1,4 @@
-# DynaEQ: an AI-backed equalizer for optimal music listening
+# Dynam EQ: an AI-backed equalizer for optimal music listening
 
 DynaEQ is an equalizer that will use AI to automatically adjust your computer's audio equalization settings based on the genre of music you're listening to.
 

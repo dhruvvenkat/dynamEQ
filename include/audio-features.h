@@ -4,11 +4,12 @@
 #define AUDIO_FEAUTURES_H
 
 typedef struct {
+    // amplitude features
     float rms; // average power of the audio signal
     float peak; // highest power level in the signal
     float dynamicRangeProxy;
 
-    // energies of each sound range
+    // frequency features - energies of each sound range
     float bassEnergy;
     float lowMidEnergy;
     float midEnergy;
