@@ -141,6 +141,21 @@ static void updateCurrTrackInfo(CurrTrackInfo *info, const TrackContext *context
     snprintf(info->URL, sizeof(info->URL), "%s", context->filePath);
 }
 
+static bool logTrackEvent(const TrackContext *context, const EqRecommendation *recommendation, bool applied) {
+    FILE *csvptr;
+    csvptr = fopen("HISTORY.csv", "a");
+    if (!csvptr) {
+        printf("error - cannot open history csv file");
+        return false;
+    }
+
+    fprintf(csvptr, "%s,%s,%s,%s,%s,%s,%f,%d\n", context->title, context->artist, context->album, context->genre, context->year, recommendation->profileName, recommendation->confidence, applied);
+
+    fclose(csvptr);
+
+    return true;
+}
+
 void buildTrackContext(CurrTrackInfo *info) {
     TrackContext context;
     EqRecommendation recommendation;
@@ -161,6 +176,7 @@ void buildTrackContext(CurrTrackInfo *info) {
     if (eqApplied == true) {
         updateCurrTrackInfo(info, &context, &recommendation);
         printTrackInfo(&context, &recommendation);
+        logTrackEvent(&context, &recommendation, eqApplied);
         return;
     } else {
         printf("eq application failed :(\n");
