@@ -8,6 +8,7 @@
 #include "eq-profiles.h"
 #include "eq-engine.h"
 #include "track-context.h"
+#include "audio-features.h"
 
 bool findPlayer() {
     FILE *fpipe;
@@ -80,6 +81,60 @@ static bool readPlayerctlValue(const char *command, char **value) {
     *value = line;
 
     return true;
+}
+
+// brought in these helpers from track-context.c, need to remove them from track-context to avoid redundancy
+static int hexValue(char ch) {
+    if (ch >= '0' && ch <= '9') {
+        return ch - '0';
+    }
+    if (ch >= 'a' && ch <= 'f') {
+        return ch - 'a' + 10;
+    }
+    if (ch >= 'A' && ch <= 'F') {
+        return ch - 'A' + 10;
+    }
+    return -1;
+}
+
+static void decodePercentEscapes(char *field, size_t fieldSize, const char *src) {
+    size_t writeIndex = 0;
+
+    if (fieldSize == 0) {
+        return;
+    }
+
+    if (src == NULL) {
+        field[0] = '\0';
+        return;
+    }
+
+    while (*src != '\0' && writeIndex + 1 < fieldSize) {
+        int high = hexValue(src[1]);
+        int low = hexValue(src[2]);
+
+        if (*src == '%' && high >= 0 && low >= 0) {
+            field[writeIndex++] = (char)((high << 4) | low);
+            src += 3;
+        } else {
+            field[writeIndex++] = *src++;
+        }
+    }
+
+    field[writeIndex] = '\0';
+}
+
+static void localPathFromTrackURL(char *field, size_t fieldSize, const char *trackURL) {
+    const char *path = trackURL;
+
+    if (trackURL != NULL && strncmp(trackURL, "file://", 7) == 0) {
+        path = trackURL + 7;
+        if (strncmp(path, "localhost/", 10) == 0) {
+            path += 9;
+        }
+    }
+
+    decodePercentEscapes(field, fieldSize, path);
 }
 
 static bool readTrackContext(TrackContext *context) {
@@ -182,11 +237,17 @@ void buildTrackContext(CurrTrackInfo *info) {
         return;
     }
 
+    char localPath[512];
+    localPathFromTrackURL(localPath, sizeof(localPath), context.filePath);
+
+    AudioFeatures features;
+
     bool eqApplied = applyEQ(&recommendation);
     if (eqApplied == true) {
         updateCurrTrackInfo(info, &context, &recommendation);
         printTrackInfo(&context, &recommendation);
         logTrackEvent(&context, &recommendation, eqApplied);
+        extractAudioFeatures(localPath, &features);
         return;
     } else {
         printf("eq application failed :(\n");
