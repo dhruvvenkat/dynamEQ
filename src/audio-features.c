@@ -5,7 +5,7 @@
 #include "audio-features.h"
 
 static bool extractAmplitudeFeatures(FILE *pcmFile, AudioFeatures *features) {
-    float sumSquares=0.0f; // stores the sum of all squares for RMS calc
+    double sumSquares = 0.0f; // stores the sum of all squares for RMS calc
     int sampleCount = 0; // # of samples in the pcm file
     int16_t rawSample;
     size_t samplesRead;
@@ -49,14 +49,16 @@ bool extractAudioFeatures(const char *normalizedFilePath, AudioFeatures *feature
         return false;
     }
 
-    char *clipPath = "~/tmp/dynaeq_clip.pcm";
+    char *clipPath = "/tmp/dynaeq_clip.pcm";
 
     FILE *pcmPath;
-    pcmPath = fopen(clipPath, "r");
+    pcmPath = fopen(clipPath, "rb");
 
     extractAmplitudeFeatures(pcmPath, features);
     //extractFrequencyFeatures(pcmPath, features);
-    extractAudioFeatures(clipPath, features);
+    //extractAudioFeatures(clipPath, features);
+
+    fclose(pcmPath);
 
     return true;
 }
