@@ -141,13 +141,23 @@ static void updateCurrTrackInfo(CurrTrackInfo *info, const TrackContext *context
     snprintf(info->URL, sizeof(info->URL), "%s", context->filePath);
 }
 
+static void isCSVEmpty(FILE *file) {
+    fseek(file, 0, SEEK_END);
+
+    if (ftell(file) == 0) {
+        fprintf(file, "title,artist,album,genre,year,profile name,confidence,applied");
+    }
+}
+
 static bool logTrackEvent(const TrackContext *context, const EqRecommendation *recommendation, bool applied) {
     FILE *csvptr;
-    csvptr = fopen("HISTORY.csv", "a");
+    csvptr = fopen("HISTORY.csv", "a"); // eventually make this an absolute path
     if (!csvptr) {
         printf("error - cannot open history csv file");
         return false;
     }
+
+    isCSVEmpty(csvptr);
 
     fprintf(csvptr, "%s,%s,%s,%s,%s,%s,%f,%d\n", context->title, context->artist, context->album, context->genre, context->year, recommendation->profileName, recommendation->confidence, applied);
 
