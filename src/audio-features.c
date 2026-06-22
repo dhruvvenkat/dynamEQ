@@ -27,16 +27,122 @@ static bool extractAmplitudeFeatures(FILE *pcmFile, AudioFeatures *features) {
         features->rms = sqrt(sumSquares / sampleCount);
         features->peak = peak;
         features->dynamicRangeProxy = features->peak / features->rms;
+        printf("rms: %f, peak: %f, dynamic range proxy; %f\n", features->rms, features->peak, features->dynamicRangeProxy);
         return true;
     }
 
-    printf("no samples were found in the inputted pcm file :(");
+    printf("no samples were found in the inputted pcm file :(\n");
     return false;
 }
 
-// static void extractFrequencyFeatures(char *samplePath, AudioFeatures *features) {
+// using the Goertzel DSP Algorithm to calcualte the magnitude of a given frequency component
+// this is how we will be calculating the strength of each frequency band in a song
+static double goertzelAlgo(const float *samples, size_t sampleCount, float targetFreq, int sampleRate) {
+    int k = 0.5 + (sampleCount * targetFreq / sampleRate);
+    double omega = 2.0 * M_PI * k / sampleCount;
+    double coeff = 2.0 * sin(omega);
+    double yPrev2 = 0.0;
+    double yPrev1 = 0.0;
+    double y = 0.0;
 
-// }
+    for (size_t n = 0; n < sampleCount; n++) {
+        y = samples[n] + coeff * yPrev1 - yPrev2;
+        yPrev2 = yPrev1;
+        yPrev1 = y;
+    }
+
+    double power = yPrev1 * yPrev1 + yPrev2 * yPrev2 - coeff * yPrev1 * yPrev2;
+
+    return power;
+}
+
+static bool extractFrequencyFeatures(FILE *pcmFile, AudioFeatures *features) {
+    if (pcmFile == NULL || features == NULL) {
+        return false;
+    }
+
+    int16_t rawBuffer[2048];
+    float samples[2048];
+
+    double bassEnergy = 0.0f;
+    double lowMidEnergy = 0.0f;
+    double midEnergy = 0.0f;
+    double presenceEnergy = 0.0f;
+    double trebleEnergy = 0.0f;
+
+    size_t samplesRead = 0;
+
+    while ((samplesRead = fread(rawBuffer, sizeof(int16_t), 2048, pcmFile)) > 0) {
+        for (size_t i = 0; i < samplesRead; i++) {
+            samples[i] = rawBuffer[i] / 32768.0f;
+        }
+
+        // add energies at several target frequencies (need to make more robust)
+        bassEnergy += goertzelAlgo(samples, samplesRead, 60.0f, SAMPLE_RATE);
+        bassEnergy += goertzelAlgo(samples, samplesRead, 120.0f, SAMPLE_RATE);
+        bassEnergy += goertzelAlgo(samples, samplesRead, 200.0f, SAMPLE_RATE);
+
+        lowMidEnergy += goertzelAlgo(samples, samplesRead, 300.0f, SAMPLE_RATE);
+        lowMidEnergy += goertzelAlgo(samples, samplesRead, 400.0f, SAMPLE_RATE);
+
+        midEnergy += goertzelAlgo(samples, samplesRead, 750.0f, SAMPLE_RATE);
+        midEnergy += goertzelAlgo(samples, samplesRead, 1000.0f, SAMPLE_RATE);
+        midEnergy += goertzelAlgo(samples, samplesRead, 1500.0f, SAMPLE_RATE);
+
+        presenceEnergy += goertzelAlgo(samples, samplesRead, 2500.0f, SAMPLE_RATE);
+        presenceEnergy += goertzelAlgo(samples, samplesRead, 4000.0f, SAMPLE_RATE);
+        presenceEnergy += goertzelAlgo(samples, samplesRead, 5500.0f, SAMPLE_RATE);
+
+        trebleEnergy += goertzelAlgo(samples, samplesRead, 8000.0f, SAMPLE_RATE);
+        trebleEnergy += goertzelAlgo(samples, samplesRead, 12000.0f, SAMPLE_RATE);
+        trebleEnergy += goertzelAlgo(samples, samplesRead, 16000.0f, SAMPLE_RATE);
+    }
+
+    if (ferror(pcmFile)) {
+        return false;
+    }
+
+    double totalEnergy = bassEnergy + lowMidEnergy + midEnergy + presenceEnergy + trebleEnergy;
+
+    if (totalEnergy <= 0.0) {
+        printf("total energy is %f, invalid (< 0), canceling\n", totalEnergy);
+        return false;
+    }
+
+    // apply energies to the features object
+    features->bassEnergy = (double)bassEnergy;
+    features->lowMidEnergy = (double)lowMidEnergy;
+    features->midEnergy = (double)midEnergy;
+    features->presenceEnergy = (double)presenceEnergy;
+    features->trebleEnergy = (double)trebleEnergy;
+
+    // calculate various ratios to inform new equalization
+    features->bassRatio = (double)(bassEnergy / totalEnergy);
+    features->brightness = (double)(trebleEnergy / totalEnergy);
+    features->harshnessRatio = (double)(presenceEnergy / totalEnergy);
+
+    printf(
+        "AudioFeatures:\n"
+        "  bassEnergy:      %.6f\n"
+        "  lowMidEnergy:    %.6f\n"
+        "  midEnergy:       %.6f\n"
+        "  presenceEnergy:  %.6f\n"
+        "  trebleEnergy:    %.6f\n"
+        "  bassRatio:       %.6f\n"
+        "  brightness:      %.6f\n"
+        "  harshnessRatio:  %.6f\n",
+        features->bassEnergy,
+        features->lowMidEnergy,
+        features->midEnergy,
+        features->presenceEnergy,
+        features->trebleEnergy,
+        features->bassRatio,
+        features->brightness,
+        features->harshnessRatio
+    );
+
+    return true;
+}
 
 bool extractAudioFeatures(const char *normalizedFilePath, AudioFeatures *features) {
     // sample the current song and kick it out to a pcm file for features to be extracted
@@ -55,8 +161,8 @@ bool extractAudioFeatures(const char *normalizedFilePath, AudioFeatures *feature
     pcmPath = fopen(clipPath, "rb");
 
     extractAmplitudeFeatures(pcmPath, features);
-    //extractFrequencyFeatures(pcmPath, features);
-    //extractAudioFeatures(clipPath, features);
+    rewind(pcmPath); // move the file stream pointer back to the beginning so that frequency extraction isn't read as EOF
+    extractFrequencyFeatures(pcmPath, features);
 
     fclose(pcmPath);
 

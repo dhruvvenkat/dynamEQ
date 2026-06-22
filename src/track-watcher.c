@@ -245,9 +245,9 @@ void buildTrackContext(CurrTrackInfo *info) {
     bool eqApplied = applyEQ(&recommendation);
     if (eqApplied == true) {
         updateCurrTrackInfo(info, &context, &recommendation);
-        printTrackInfo(&context, &recommendation);
         logTrackEvent(&context, &recommendation, eqApplied);
         extractAudioFeatures(localPath, &features);
+        printTrackInfo(&context, &recommendation);
         return;
     } else {
         printf("eq application failed :(\n");
