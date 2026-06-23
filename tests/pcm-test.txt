@@ -1,0 +1,35 @@
+######## 100 HZ ############
+rms: 0.088369, peak: 0.124969, dynamic range proxy; 1.414175
+AudioFeatures:
+  bassEnergy:      143469.186815
+  lowMidEnergy:    3027.135023
+  midEnergy:       450.455299
+  presenceEnergy:  35.129874
+  trebleEnergy:    4.356034
+  bassRatio:       0.976072
+  brightness:      0.000030
+  harshnessRatio:  0.000239
+
+######## 1000 HZ ############
+rms: 0.088370, peak: 0.124969, dynamic range proxy; 1.414169
+AudioFeatures:
+  bassEnergy:      501.611001
+  lowMidEnergy:    473.966100
+  midEnergy:       893911.480816
+  presenceEnergy:  61.044966
+  trebleEnergy:    5.366575
+  bassRatio:       0.000560
+  brightness:      0.000006
+  harshnessRatio:  0.000068
+
+######## 8000 HZ ############
+rms: 0.088369, peak: 0.124969, dynamic range proxy; 1.414179
+AudioFeatures:
+  bassEnergy:      8.905849
+  lowMidEnergy:    5.965318
+  midEnergy:       9.391705
+  presenceEnergy:  24.128559
+  trebleEnergy:    769149.482444
+  bassRatio:       0.000012
+  brightness:      0.999937
+  harshnessRatio:  0.000031

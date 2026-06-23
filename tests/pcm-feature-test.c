@@ -2,7 +2,31 @@
 #include <stdlib.h>
 #include <stdint.h>
 #include <math.h>
-#include "audio-features.h"
+#include <stdbool.h>
+
+#define SAMPLE_RATE 44100
+
+typedef struct {
+    // amplitude features
+    double rms; // average power of the audio signal
+    double peak; // highest power level in the signal
+    double dynamicRangeProxy;
+
+    // frequency features - energies of each sound range
+    double bassEnergy;
+    double lowMidEnergy;
+    double midEnergy;
+    double presenceEnergy;
+    double trebleEnergy;
+
+    double brightness; // treble as compared to the rest of the audio
+    double bassRatio; // bass as compared to the rest of the audio
+    double harshnessRatio; // unpredictability in upper midrange frequencies
+
+    int samplingRate; // relative quality
+    int analyzedSeconds; // keeps track of the # of seconds we analyzed for (length of a frame)
+} AudioFeatures;
+
 
 static bool extractAmplitudeFeatures(FILE *pcmFile, AudioFeatures *features) {
     double sumSquares = 0.0f; // stores the sum of all squares for RMS calc
@@ -144,21 +168,21 @@ static bool extractFrequencyFeatures(FILE *pcmFile, AudioFeatures *features) {
     return true;
 }
 
-bool extractAudioFeatures(const char *normalizedFilePath, AudioFeatures *features) {
-    // sample the current song and kick it out to a pcm file for features to be extracted
-    char *extractFeaturesCMD = NULL;
-    asprintf(&extractFeaturesCMD, "ffmpeg -nostdin -v error -ss 30 -i \"%s\" -t 30 -ac 1 -ar 44100 -f s16le pipe:1 > /tmp/dynaeq_clip.pcm", normalizedFilePath);
-    int executed = system(extractFeaturesCMD);
-    free(extractFeaturesCMD);
+bool extractAudioFeatures(AudioFeatures *features) {
+    // // sample the current song and kick it out to a pcm file for features to be extracted
+    // char *extractFeaturesCMD = NULL;
+    // asprintf(&extractFeaturesCMD, "ffmpeg -nostdin -v error -ss 30 -i \"%s\" -t 30 -ac 1 -ar 44100 -f s16le pipe:1 > /tmp/dynaeq_clip.pcm", normalizedFilePath);
+    // int executed = system(extractFeaturesCMD);
+    // free(extractFeaturesCMD);
 
-    if (executed == -1) {
-        return false;
-    }
+    // if (executed == -1) {
+    //     return false;
+    // }
 
-    char *clipPath = "/tmp/dynaeq_clip.pcm";
+    char clipPath[3][64] = {"/tmp/100hz.pcm", "/tmp/1000hz.pcm", "/tmp/8000hz.pcm"};
 
     FILE *pcmPath;
-    pcmPath = fopen(clipPath, "rb");
+    pcmPath = fopen(clipPath[2], "rb");
 
     extractAmplitudeFeatures(pcmPath, features);
     rewind(pcmPath); // move the file stream pointer back to the beginning so that frequency extraction isn't read as EOF
@@ -167,4 +191,9 @@ bool extractAudioFeatures(const char *normalizedFilePath, AudioFeatures *feature
     fclose(pcmPath);
 
     return true;
+}
+
+int main() {
+    AudioFeatures features;
+    extractAudioFeatures(&features);
 }
