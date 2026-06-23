@@ -118,7 +118,11 @@ static void inputRecommendation(EqRecommendation *recommendation, const EqProfil
 void adjustRecommendationUsingFeatures(EqRecommendation *recommendation, AudioFeatures *features) {
     // if BassPlus is recommended but the song is already bass-heavy, do not edit the bass
     if ((strcmp(recommendation->profileName, "BassPlus") == 0) && (features->bassRatio > 0.95)) {
-        neutralFallbackRecommendation(recommendation);
         inputRecommendation(recommendation, &profiles[2]);
+        printf("adjusted by features: true\n");
+        printf("adjustment reason: bass too high\n");
+        return;
     }
+
+    printf("no adjustments to make :)\n");
 }

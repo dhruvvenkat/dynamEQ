@@ -266,6 +266,7 @@ void buildTrackContext(CurrTrackInfo *info) {
     if (eqApplied == true) {
         updateCurrTrackInfo(info, &context, &recommendation);
         extractAudioFeatures(localPath, &features);
+        adjustRecommendationUsingFeatures(&recommendation, &features);
         logTrackEvent(&context, &recommendation, eqApplied, &features);
         printTrackInfo(&context, &recommendation);
         return;
