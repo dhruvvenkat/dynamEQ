@@ -3,6 +3,8 @@
 #include "genre-mapping.h"
 #include "eq-profiles.h"
 #include "track-context.h"
+#include "audio-features.h"
+#include "eq-profiles.h"
 
 typedef struct {
     const char *genre;
@@ -97,4 +99,26 @@ void neutralFallbackRecommendation(EqRecommendation *recommendation) {
     }
 
     recommendation->source = EQ_REC_SOURCE_NEUTRAL_FALLBACK;
+}
+
+// helper to directly input a recommendation ourselves when vetoing an EQ profile
+static void inputRecommendation(EqRecommendation *recommendation, const EqProfile *profile) {
+    pullString(recommendation->profileName, 64, profile->name);
+    recommendation->confidence = 1.0f;
+
+    for (int i = 9; i >= 0; i--) {
+        recommendation->gainsDb[i] = profile->gains_db[i];
+    }
+
+    recommendation->source = EQ_REC_SOURCE_MODEL_AUDIO;
+}
+
+// function that runs after the initial recommendation and audio features are pulled
+// vetos/adjusts the recommendation based on the waveform as analyzed in audio-features.c
+void adjustRecommendationUsingFeatures(EqRecommendation *recommendation, AudioFeatures *features) {
+    // if BassPlus is recommended but the song is already bass-heavy, do not edit the bass
+    if ((strcmp(recommendation->profileName, "BassPlus") == 0) && (features->bassRatio > 0.95)) {
+        neutralFallbackRecommendation(recommendation);
+        inputRecommendation(recommendation, &profiles[2]);
+    }
 }

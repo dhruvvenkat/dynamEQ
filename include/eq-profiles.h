@@ -14,7 +14,6 @@ typedef enum {
     EQ_REC_SOURCE_MANUAL_OVERRIDE // user override
 } EqRecommendationSource;
 
-
 typedef struct {
     char profileName[64];
     float gainsDb[EQ_BAND_COUNT];
@@ -39,6 +38,7 @@ typedef struct {
     const char *presetName; // stores the name of the preset as held in easyeffects
 } EqProfile;
 
+extern const EqProfile profiles[EQ_PRESET_COUNT];
 const EqProfile *eq_profile_get(EqPresetID id);
 void printProfile(const EqProfile *profile);
 #endif

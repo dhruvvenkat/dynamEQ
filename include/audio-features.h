@@ -1,7 +1,7 @@
 #include <stdbool.h>
 
 #ifndef AUDIO_FEATURES_H
-#define AUDIO_FEAUTURES_H
+#define AUDIO_FEATURES_H
 
 #define SAMPLE_RATE 44100
 
