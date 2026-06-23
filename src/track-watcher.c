@@ -200,11 +200,11 @@ static void isCSVEmpty(FILE *file) {
     fseek(file, 0, SEEK_END);
 
     if (ftell(file) == 0) {
-        fprintf(file, "title,artist,album,genre,year,profile name,confidence,applied");
+        fprintf(file, "title,artist,album,genre,year,profile name,confidence,applied,rms,peak,dynamic_range_proxy,bass_energy,low_mid_energy,mid_energy,presence_energy,treble_energy,bass_ratio,brightness,harshness_ratio");
     }
 }
 
-static bool logTrackEvent(const TrackContext *context, const EqRecommendation *recommendation, bool applied) {
+static bool logTrackEvent(const TrackContext *context, const EqRecommendation *recommendation, bool applied, AudioFeatures *features) {
     FILE *csvptr;
     csvptr = fopen("HISTORY.csv", "a"); // eventually make this an absolute path
     if (!csvptr) {
@@ -214,7 +214,27 @@ static bool logTrackEvent(const TrackContext *context, const EqRecommendation *r
 
     isCSVEmpty(csvptr);
 
-    fprintf(csvptr, "%s,%s,%s,%s,%s,%s,%f,%d\n", context->title, context->artist, context->album, context->genre, context->year, recommendation->profileName, recommendation->confidence, applied);
+    fprintf(csvptr, "%s,%s,%s,%s,%s,%s,%f,%d,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f\n",
+        context->title,
+        context->artist,
+        context->album,
+        context->genre,
+        context->year,
+        recommendation->profileName,
+        recommendation->confidence,
+        applied,
+        features->rms,
+        features->peak,
+        features->dynamicRangeProxy,
+        features->bassEnergy,
+        features->lowMidEnergy,
+        features->midEnergy,
+        features->presenceEnergy,
+        features->trebleEnergy,
+        features->bassRatio,
+        features->brightness,
+        features->harshnessRatio
+    );
 
     fclose(csvptr);
 
@@ -245,8 +265,8 @@ void buildTrackContext(CurrTrackInfo *info) {
     bool eqApplied = applyEQ(&recommendation);
     if (eqApplied == true) {
         updateCurrTrackInfo(info, &context, &recommendation);
-        logTrackEvent(&context, &recommendation, eqApplied);
         extractAudioFeatures(localPath, &features);
+        logTrackEvent(&context, &recommendation, eqApplied, &features);
         printTrackInfo(&context, &recommendation);
         return;
     } else {
